@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Input from "./Input";
 import Dropdown from "./Dropdown";
-import google from "../apis/google";
+import Convert from "./Convert";
 
 // Data: language options
 const options = [
@@ -17,40 +17,19 @@ const options = [
 const Translation = () => {
   const [text, setText] = useState("");
   const [language, setLanguage] = useState(options[0]);
-  const [translated, setTranslated] = useState("");
-
-  // Get results from API
-  useEffect(() => {
-    const doTranslation = async () => {
-      const { data } = await google.post(
-        "/language/translate/v2",
-        {},
-        {
-          params: {
-            q: text,
-            target: language.value,
-          },
-        }
-      );
-      setTranslated(data.data.translations[0].translatedText);
-    };
-    doTranslation();
-  }, [language, text]);
 
   return (
     <div className="translation ui container ">
-      <Input label="Enter some text" onChange={setText} />
+      <Input label="Enter some text" onChange={setText} text={text} />
       <Dropdown
         label="language"
         options={options}
         selected={language}
         onSelectedChange={setLanguage}
       />
-      <div className="result">
-        <hr></hr>
-        <h4>Output</h4>
-        <p>{translated}</p>
-      </div>
+      <hr />
+      <h3 className="ui header">Output</h3>
+      <Convert text={text} language={language} />
     </div>
   );
 };
