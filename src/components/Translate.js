@@ -1,49 +1,58 @@
-import React, { useState } from 'react';
-import Dropdown from './Dropdown';
-import Convert from './Convert';
+import React, { useState, useEffect } from "react";
+import Input from "./Input";
+import Dropdown from "./Dropdown";
+import google from "../apis/google";
 
+// Data: language options
 const options = [
-  {
-    label: 'Afrikaans',
-    value: 'af',
-  },
-  {
-    label: 'Arabic',
-    value: 'ar',
-  },
-  {
-    label: 'Hindi',
-    value: 'hi',
-  },
-  {
-    label: 'Dutch',
-    value: 'nl',
-  },
+  { label: "Arabic", value: "ar" },
+  { label: "Dutch", value: "nl" },
+  { label: "English", value: "en" },
+  { label: "French", value: "fr" },
+  { label: "German", value: "de" },
+  { label: "Hindi", value: "hi" },
+  { label: "Italian", value: "it" },
 ];
 
-const Translate = () => {
+const Translation = () => {
+  const [text, setText] = useState("");
   const [language, setLanguage] = useState(options[0]);
-  const [text, setText] = useState('');
+  const [translated, setTranslated] = useState("");
+
+  // Get results from API
+  useEffect(() => {
+    const doTranslation = async () => {
+      const { data } = await google.post(
+        "/language/translate/v2",
+        {},
+        {
+          params: {
+            q: text,
+            target: language.value,
+          },
+        }
+      );
+      setTranslated(data.data.translations[0].translatedText);
+    };
+    doTranslation();
+  }, [language, text]);
 
   return (
-    <div>
-      <div className="ui form">
-        <div className="field">
-          <label>Enter Text</label>
-          <input value={text} onChange={(e) => setText(e.target.value)} />
-        </div>
-      </div>
+    <div className="translation ui container ">
+      <Input label="Enter some text" onChange={setText} />
       <Dropdown
-        label="Select a Language"
+        label="language"
+        options={options}
         selected={language}
         onSelectedChange={setLanguage}
-        options={options}
       />
-      <hr />
-      <h3 className="ui header">Output</h3>
-      <Convert text={text} language={language} />
+      <div className="result">
+        <hr></hr>
+        <h4>Output</h4>
+        <p>{translated}</p>
+      </div>
     </div>
   );
 };
 
-export default Translate;
+export default Translation;

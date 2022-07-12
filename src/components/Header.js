@@ -1,23 +1,21 @@
-import React from 'react';
-import Link from './Link';
+import React from "react";
+import Link from "./Link";
 
-const Header = () => {
+export default function Header() {
   return (
     <div className="ui secondary pointing menu">
-      <Link href="/" className="item">
-        Accordion
+      <Link className="item" href="/">
+        Photos
       </Link>
-      <Link href="/list" className="item">
-        Search
+      <Link className="item" href="/videos">
+        Videos
       </Link>
-      <Link href="/dropdown" className="item">
-        Dropdown
-      </Link>
-      <Link href="/translate" className="item">
+      <Link className="item" href="/translate ">
         Translate
+      </Link>
+      <Link className="item" href="/wikipedia">
+        Wikipedia
       </Link>
     </div>
   );
-};
-
-export default Header;
+}

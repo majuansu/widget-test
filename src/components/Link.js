@@ -1,20 +1,27 @@
-import React from 'react';
+import React from "react";
 
 const Link = ({ className, href, children }) => {
-  const onClick = (event) => {
-    if (event.metaKey || event.ctrlKey) {
+  const onLinkClicked = (e) => {
+    // For command click, allow browser default behaviour
+    if (e.metaKey || e.ctrlKey) {
       return;
     }
 
-    event.preventDefault();
-    window.history.pushState({}, '', href);
+    // Otherwise, prevent full page re-load and change URL manually and re-render
+    e.preventDefault();
+    window.history.pushState({}, "", href);
 
-    const navEvent = new PopStateEvent('popstate');
+    const navEvent = new PopStateEvent("popstate");
     window.dispatchEvent(navEvent);
+
+    document.querySelectorAll(".item").forEach((el) => {
+      el.classList.remove("active");
+    });
+    e.target.classList.add("active");
   };
 
   return (
-    <a onClick={onClick} className={className} href={href}>
+    <a className={className} href={href} onClick={onLinkClicked}>
       {children}
     </a>
   );

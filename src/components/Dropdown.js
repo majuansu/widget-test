@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 const Dropdown = ({ label, options, selected, onSelectedChange }) => {
   const [open, setOpen] = useState(false);
-  const ref = useRef();
 
+  // Close dropdown when click outside the menu
+  const ref = useRef();
   useEffect(() => {
-    const onBodyClick = (event) => {
-      if (ref.current.contains(event.target)) {
+    const onBodyClick = (e) => {
+      if (ref.current.contains(e.target)) {
         return;
       }
       setOpen(false);
     };
     document.body.addEventListener("click", onBodyClick, { capture: true });
 
+    // Remove click event listener while the page not show
     return () => {
       document.body.removeEventListener("click", onBodyClick, {
         capture: true,
@@ -20,15 +22,17 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
     };
   }, []);
 
+  // Render the dropdown options
   const renderedOptions = options.map((option) => {
-    if (option.value === selected.value) {
+    // Filtered out the selected option
+    if (option === selected) {
       return null;
     }
 
     return (
       <div
-        key={option.value}
         className="item"
+        key={option.value}
         onClick={() => onSelectedChange(option)}
       >
         {option.label}
@@ -37,16 +41,18 @@ const Dropdown = ({ label, options, selected, onSelectedChange }) => {
   });
 
   return (
-    <div ref={ref} className="ui form">
+    <div className="drop-down ui form ">
       <div className="field">
-        <label className="label">{label}</label>
+        <label className="label">Select a {label}</label>
         <div
-          onClick={() => setOpen(!open)}
-          className={`ui selection dropdown ${open ? "visible active" : ""}`}
+          className={`ui selection dropdown ${open ? "active visible" : ""}`}
+          onClick={() => {
+            setOpen(!open);
+          }}
         >
           <i className="dropdown icon"></i>
-          <div className="text">{selected.label}</div>
-          <div className={`menu ${open ? "visible transition" : ""}`}>
+          <div className="default text">{selected.label}</div>
+          <div className={`menu ${open ? "visible transition" : ""}`} ref={ref}>
             {renderedOptions}
           </div>
         </div>
